@@ -20,5 +20,12 @@ variable "frontend_url" {
 variable "dev_mode" {
   description = "If true, magic link is returned in API response instead of sent by email"
   type        = string
-  default     = "true"
+  default     = "false"
+}
+
+variable "resend_api_key" {
+  description = "Resend API key for email delivery"
+  type        = string
+  sensitive   = true
+  default     = ""
 }

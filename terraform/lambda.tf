@@ -30,10 +30,11 @@ resource "aws_lambda_function" "main" {
 
   environment {
     variables = {
-      JWT_SECRET                       = var.jwt_secret
-      ADMIN_EMAIL                      = var.admin_email
-      FRONTEND_URL                     = var.frontend_url
-      DEV_MODE                         = var.dev_mode
+      JWT_SECRET                          = var.jwt_secret
+      ADMIN_EMAIL                         = var.admin_email
+      FRONTEND_URL                        = var.frontend_url
+      DEV_MODE                            = var.dev_mode
+      RESEND_API_KEY                      = var.resend_api_key
       AWS_NODEJS_CONNECTION_REUSE_ENABLED = "1"
     }
   }
