@@ -15,45 +15,20 @@ async function sendMagicLink(email, token, frontendUrl) {
   const html = `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#f8fafc;font-family:Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 0;">
-    <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#0f172a;border-radius:12px;overflow:hidden;">
-        <tr>
-          <td style="background:#1e293b;padding:24px 32px;border-bottom:1px solid #334155;">
-            <h1 style="margin:0;color:#3b82f6;font-size:22px;font-weight:700;">
-              Where's <span style="color:#60a5fa;">Laurent</span>
-            </h1>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:32px;">
-            <p style="margin:0 0 16px;color:#e2e8f0;font-size:16px;">Bonjour,</p>
-            <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-              Cliquez sur le bouton ci-dessous pour vous connecter à <strong style="color:#e2e8f0;">Where's Laurent</strong>.
-              Ce lien est valable <strong style="color:#e2e8f0;">15 minutes</strong>.
-            </p>
-            <table cellpadding="0" cellspacing="0" style="margin:0 auto 28px;">
-              <tr>
-                <td align="center" style="border-radius:8px;background:#3b82f6;">
-                  <a href="${magicLink}"
-                     style="display:inline-block;padding:14px 32px;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;border-radius:8px;">
-                    Se connecter →
-                  </a>
-                </td>
-              </tr>
-            </table>
-            <p style="margin:0 0 8px;color:#64748b;font-size:12px;">
-              Si vous n'avez pas demandé ce lien, ignorez cet email.
-            </p>
-            <p style="margin:0;color:#475569;font-size:11px;word-break:break-all;">
-              Lien direct : ${magicLink}
-            </p>
-          </td>
-        </tr>
-      </table>
-    </td></tr>
-  </table>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f4;">
+  <div style="max-width:520px;margin:40px auto;background:#ffffff;border-radius:8px;padding:32px;border:1px solid #e0e0e0;">
+    <h2 style="margin:0 0 24px;color:#1a1a1a;font-size:20px;">Where's Laurent — Connexion</h2>
+    <p style="margin:0 0 16px;color:#333;font-size:15px;">Bonjour,</p>
+    <p style="margin:0 0 24px;color:#555;font-size:15px;line-height:1.6;">
+      Cliquez sur le lien ci-dessous pour vous connecter. Ce lien est valable <strong>15 minutes</strong>.
+    </p>
+    <p style="margin:0 0 24px;">
+      <a href="${magicLink}" style="color:#2563eb;font-size:15px;">Se connecter à Where's Laurent</a>
+    </p>
+    <p style="margin:0;color:#999;font-size:12px;">
+      Si vous n'avez pas demandé ce lien, ignorez cet email.
+    </p>
+  </div>
 </body>
 </html>`;
 
