@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { isAuthenticated, isAdmin, removeToken } from '../lib/auth';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const authenticated = isAuthenticated();
-  const admin = isAdmin();
+  const { isAuthenticated: authenticated, isAdmin: admin, logout } = useAuth();
 
   function handleLogout() {
-    removeToken();
-    navigate('/');
+    logout();
+    navigate('/login');
   }
 
   function isActive(path: string) {

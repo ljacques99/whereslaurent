@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../lib/api';
-import { setToken } from '../lib/auth';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AuthVerify() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +21,7 @@ export default function AuthVerify() {
     async function verify() {
       try {
         const result = await api.verifyMagicLink(token!);
-        setToken(result.token);
+        login(result.token);
         setStatus('success');
         // Redirect after a short delay
         setTimeout(() => {
