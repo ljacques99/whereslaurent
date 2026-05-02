@@ -34,7 +34,7 @@ resource "aws_lambda_function" "main" {
       ADMIN_EMAIL                         = var.admin_email
       FRONTEND_URL                        = var.frontend_url
       DEV_MODE                            = var.dev_mode
-      RESEND_API_KEY                      = var.resend_api_key
+      BREVO_API_KEY                       = var.brevo_api_key
       AWS_NODEJS_CONNECTION_REUSE_ENABLED = "1"
     }
   }

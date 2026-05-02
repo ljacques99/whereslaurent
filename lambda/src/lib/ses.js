@@ -1,8 +1,7 @@
 'use strict';
 
 const DEV_MODE = process.env.DEV_MODE === 'true';
-const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
-const FROM_ADDRESS = 'Where\'s Laurent <noreply@evolversfr.com>';
+const BREVO_API_KEY = process.env.BREVO_API_KEY || '';
 
 async function sendMagicLink(email, token, frontendUrl) {
   const magicLink = `${frontendUrl}/auth/verify?token=${token}`;
@@ -32,24 +31,28 @@ async function sendMagicLink(email, token, frontendUrl) {
 </body>
 </html>`;
 
-  const res = await fetch('https://api.resend.com/emails', {
+  const payload = {
+    sender: { name: "Where's Laurent", email: 'noreply@evolversfr.com' },
+    to: [{ email }],
+    subject: "Where's Laurent — votre lien de connexion",
+    htmlContent: html,
+    textContent: `Connectez-vous à Where's Laurent :\n\n${magicLink}\n\nCe lien est valable 15 minutes.`,
+  };
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'api-key': BREVO_API_KEY,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      from: FROM_ADDRESS,
-      to: [email],
-      subject: "Where's Laurent — votre lien de connexion",
-      html,
-      text: `Connectez-vous à Where's Laurent :\n\n${magicLink}\n\nCe lien est valable 15 minutes.`,
-    }),
+    body: JSON.stringify(payload),
   });
 
+  const responseText = await res.text();
+  console.log(`Brevo response ${res.status}: ${responseText}`);
+
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Resend error ${res.status}: ${err}`);
+    throw new Error(`Brevo error ${res.status}: ${responseText}`);
   }
 
   return {};

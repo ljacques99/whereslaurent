@@ -23,8 +23,8 @@ variable "dev_mode" {
   default     = "false"
 }
 
-variable "resend_api_key" {
-  description = "Resend API key for email delivery"
+variable "brevo_api_key" {
+  description = "Brevo API key for email delivery"
   type        = string
   sensitive   = true
   default     = ""
