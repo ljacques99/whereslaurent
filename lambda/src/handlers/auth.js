@@ -22,8 +22,7 @@ async function handleMagicLink(body) {
   }));
 
   if (!userResult.Item) {
-    // Return success anyway to avoid enumeration
-    return { statusCode: 200, body: JSON.stringify({ message: 'If your email is registered, you will receive a magic link' }) };
+    return { statusCode: 404, body: JSON.stringify({ error: 'Cet email n\'est pas enregistré. Contactez Laurent pour obtenir un accès.' }) };
   }
 
   const token = uuidv4();
