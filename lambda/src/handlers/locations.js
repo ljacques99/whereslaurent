@@ -92,6 +92,24 @@ function getCoordsForCity(city) {
   return CITY_COORDS[city] || null;
 }
 
+async function geocodeCity(city, country) {
+  try {
+    const q = country ? `${city}, ${country}` : city;
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`;
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'WheresLaurent/1.0 (laurent.jacques79@gmail.com)' },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data && data.length > 0) {
+      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    }
+  } catch (err) {
+    console.error('Geocoding error:', err);
+  }
+  return null;
+}
+
 function getTodayString() {
   const d = new Date();
   return d.toISOString().split('T')[0];
@@ -120,15 +138,30 @@ async function handleCreateLocation(body) {
     return { statusCode: 400, body: JSON.stringify({ error: 'city, country, arrival_date, departure_date are required' }) };
   }
 
-  const coords = getCoordsForCity(city);
+  let resolvedLat = lat;
+  let resolvedLng = lng;
+  if (resolvedLat == null || resolvedLng == null) {
+    const staticCoords = getCoordsForCity(city);
+    if (staticCoords) {
+      resolvedLat = resolvedLat ?? staticCoords.lat;
+      resolvedLng = resolvedLng ?? staticCoords.lng;
+    } else {
+      const geoCoords = await geocodeCity(city, country);
+      if (geoCoords) {
+        resolvedLat = resolvedLat ?? geoCoords.lat;
+        resolvedLng = resolvedLng ?? geoCoords.lng;
+      }
+    }
+  }
+
   const item = {
     id: uuidv4(),
     city,
     country,
     arrival_date,
     departure_date,
-    lat: lat ?? (coords ? coords.lat : null),
-    lng: lng ?? (coords ? coords.lng : null),
+    lat: resolvedLat ?? null,
+    lng: resolvedLng ?? null,
     created_at: new Date().toISOString(),
   };
 
@@ -179,11 +212,13 @@ async function handleUpdateLocation(id, body) {
     expressionValues[':lng'] = lng;
   }
 
-  // Auto-update coords if city changed and no explicit coords
+  // Auto-resolve coords if city changed and no explicit coords provided
   if (city && lat === undefined && lng === undefined) {
-    const coords = getCoordsForCity(city);
+    const staticCoords = getCoordsForCity(city);
+    const coords = staticCoords || await geocodeCity(city, country);
     if (coords) {
-      updateExpressions.push('#lat = :lat, #lng = :lng');
+      updateExpressions.push('#lat = :lat');
+      updateExpressions.push('#lng = :lng');
       expressionNames['#lat'] = 'lat';
       expressionNames['#lng'] = 'lng';
       expressionValues[':lat'] = coords.lat;

@@ -8,6 +8,11 @@ import AdminLocations from './pages/admin/AdminLocations';
 import AdminUsers from './pages/admin/AdminUsers';
 import { isAdmin, isAuthenticated } from './lib/auth';
 
+function AuthRoute({ children }: { children: React.ReactNode }) {
+  if (!isAuthenticated()) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 function AdminRoute({ children }: { children: React.ReactNode }) {
   if (!isAuthenticated()) return <Navigate to="/login" replace />;
   if (!isAdmin()) return <Navigate to="/" replace />;
@@ -21,7 +26,7 @@ export default function App() {
         <Navbar />
         <main>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<AuthRoute><Home /></AuthRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/auth/verify" element={<AuthVerify />} />
             <Route

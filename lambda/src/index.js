@@ -92,7 +92,10 @@ exports.handler = async (event) => {
     // ========================
     if (method === 'GET' && path === '/locations') {
       const user = await getAuthUser(event);
-      return addCors(await handleGetLocations(user?.role === 'admin'));
+      if (!user) {
+        return response(401, { error: 'Unauthorized' });
+      }
+      return addCors(await handleGetLocations(user.role === 'admin'));
     }
 
     if (method === 'GET' && path === '/locations/all') {

@@ -161,11 +161,13 @@ La révocation ne maintient pas de liste noire par token (trop coûteux à l'éc
 
 | Route | Accès | Description |
 |-------|-------|-------------|
-| `/` | Public | Carte + tableau (villes présentes & futures) |
+| `/` | **Authentifié** | Carte + tableau — redirige vers `/login` si non connecté |
 | `/login` | Public | Formulaire email magic link |
 | `/auth/verify` | Public | Traitement du token |
 | `/admin/locations` | Admin | CRUD des villes |
 | `/admin/users` | Admin | CRUD des utilisateurs + révocation JWT |
+
+**Règle d'accès :** La carte et le tableau de villes ne s'affichent que pour les utilisateurs authentifiés (visiteurs et admins). Tout utilisateur non connecté accédant à `/` est redirigé vers `/login`. Le endpoint `GET /locations` de la Lambda retourne `401` si aucun JWT valide n'est fourni.
 
 ### 7.2 Carte interactive
 
@@ -211,6 +213,18 @@ La révocation ne maintient pas de liste noire par token (trop coûteux à l'éc
 - **Typographie :** Inter ou Geist
 - **Responsive :** Desktop et mobile
 - **Langue de l'interface :** Anglais (nom de l'app) / Français (contenu)
+
+---
+
+### 8.1 Géocodage automatique des coordonnées
+
+Quand l'admin crée ou modifie une ville sans fournir latitude/longitude, la Lambda résout les coordonnées automatiquement dans cet ordre de priorité :
+
+1. **Table statique** intégrée au code (80+ villes prédéfinies) — résolution instantanée
+2. **Nominatim / OpenStreetMap** (API publique, gratuite) — appelée si la ville n'est pas dans la table statique, avec le header `User-Agent: WheresLaurent/1.0`
+3. **null** — si les deux méthodes échouent, les coordonnées restent nulles (la ville apparaît dans le tableau mais pas sur la carte)
+
+L'admin peut toujours forcer des coordonnées manuelles via les champs Latitude/Longitude du formulaire.
 
 ---
 
