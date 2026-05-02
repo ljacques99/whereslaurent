@@ -2,7 +2,7 @@
 
 const DEV_MODE = process.env.DEV_MODE === 'true';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
-const FROM_ADDRESS = 'Where\'s Laurent <onboarding@resend.dev>';
+const FROM_ADDRESS = 'Where\'s Laurent <noreply@evolversfr.com>';
 
 async function sendMagicLink(email, token, frontendUrl) {
   const magicLink = `${frontendUrl}/auth/verify?token=${token}`;
